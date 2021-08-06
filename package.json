@@ -1,0 +1,41 @@
+{
+  "name": "material-crud-component",
+  "version": "1.0.0",
+  "description": "Crud Component using Material-UI",
+  "main": "./lib/cjs/index.js",
+  "module": "./lib/esm/index.js",
+  "types": "./lib/esm/index.d.ts",
+  "repository": "https://github.com/dondragon2/material-crud-component.git",
+  "author": "Donald Walters <donald.walters@gmail.com>",
+  "license": "GPL3",
+  "private": false,
+  "scripts": {
+    "build": "yarn build:esm && yarn build:cjs",
+    "build:esm": "tsc",
+    "build:cjs": "tsc --module commonjs --outDir lib/cjs",
+    "prepublishOnly": "yarn build"
+  },
+  "devDependencies": {
+    "@material-ui/core": "^4.12.3",
+    "@material-ui/icons": "^4.11.2",
+    "@rjsf/core": "^3.0.0",
+    "@rjsf/material-ui": "^3.0.0",
+    "@types/lodash": "^4.14.172",
+    "@types/react": "^17.0.16",
+    "@types/react-dom": "^17.0.9",
+    "lodash": "^4.17.21",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "typescript": "^4.1.2"
+  },
+  "peerDependencies": {
+    "@material-ui/core": "^4.12.3",
+    "@material-ui/icons": "^4.11.2",
+    "@rjsf/core": "^3.0.0",
+    "@rjsf/material-ui": "^3.0.0",
+    "lodash": "^4.17.21"
+  },
+  "files": [
+    "/lib"
+  ]
+}
