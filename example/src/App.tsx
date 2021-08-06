@@ -2,8 +2,7 @@ import React from 'react';
 
 import './App.css';
 import numeral from 'numeral';
-// @ts-ignore
-import Crud from 'material-crud';
+import Crud from 'material-crud-component';
 
 function createData(
     id: number,
