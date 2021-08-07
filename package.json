@@ -1,6 +1,6 @@
 {
   "name": "material-crud-component",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Crud Component using Material-UI",
   "main": "./lib/cjs/index.js",
   "module": "./lib/esm/index.js",
