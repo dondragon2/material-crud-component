@@ -17,7 +17,7 @@ jobs:
         with:
           node-version: 14
       - run: rm -rf node_modules package-lock.json yarn.lock
-      - run: npm ci
+      - run: npm i
       - run: npm test
 
   publish-npm:
@@ -30,7 +30,7 @@ jobs:
           node-version: 14
           registry-url: https://registry.npmjs.org/
       - run: rm -rf node_modules package-lock.json yarn.lock
-      - run: npm ci
+      - run: npm i
       - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_ACCESS_TOKEN}}
@@ -48,7 +48,7 @@ jobs:
           node-version: 14
           registry-url: https://npm.pkg.github.com/
       - run: rm -rf node_modules package-lock.json yarn.lock
-      - run: npm ci
+      - run: npm i
       - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
