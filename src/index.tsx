@@ -1,4 +1,5 @@
 import {
+    CircularProgress,
     createStyles,
     Dialog,
     DialogContent,
@@ -39,6 +40,7 @@ const Transition = React.forwardRef(function Transition(
 
 export interface ICrudProps {
     title?: string;
+    loading?: boolean;
     data: any[];
     columns: Column[];
     idExtractor: (val: any, index?: number) => string;
@@ -120,16 +122,17 @@ const StyledTableRow = withStyles((theme: Theme) =>
 )(TableRow);
 
 const Crud: React.FC<ICrudProps> = ({
-                                               title,
-                                               data,
-                                               tableClassname,
-                                               columns,
-                                               idExtractor,
-                                               pagination,
-                                               onDelete,
-                                               addItem,
-                                               editItem
-                                           }) => {
+                                        title,
+                                        data,
+                                        tableClassname,
+                                        columns,
+                                        idExtractor,
+                                        pagination,
+                                        onDelete,
+                                        addItem,
+                                        editItem,
+                                        loading
+                                    }) => {
     const classes = useStyles();
     const [selected, setSelected] = React.useState<any | undefined>(undefined);
     const [modalVisible, setModalVisible] = React.useState(false);
@@ -162,7 +165,7 @@ const Crud: React.FC<ICrudProps> = ({
     };
 
     const handleEdit = () => {
-        if (editItem?.form) {
+        if (editItem && editItem.form) {
             setModalVisible(true);
             setMode('edit')
         } else {
@@ -171,7 +174,7 @@ const Crud: React.FC<ICrudProps> = ({
     };
 
     const handleAdd = () => {
-        if (addItem?.form) {
+        if (addItem && addItem.form) {
             setMode('add')
             setFormSchema((addItem?.form || {}));
             setModalVisible(true);
@@ -220,69 +223,74 @@ const Crud: React.FC<ICrudProps> = ({
                                 ))}
                             </TableRow>
                         </TableHead>
-                        <TableBody>
-                            {data.map((row, index) => {
-                                const id = idExtractor(row, index);
-                                const isItemSelected = isSelected(row);
+                        {loading ? (<CircularProgress/>) : (
+                            <>
+                                <TableBody>
+                                    {data.map((row, index) => {
+                                        const id = idExtractor(row, index);
+                                        const isItemSelected = isSelected(row);
 
-                                return (
-                                    <StyledTableRow
-                                        key={id}
-                                        selected={isItemSelected}
-                                        onClick={(event) => handleClick(event, row)}
-                                    >
-                                        {columns.map((col, colIndex) => {
-                                            const text = col.format ? col.format(row[col.name]) : row[col.name];
-                                            return (
-                                                <StyledTableCell
-                                                    align={col.align}
-                                                    key={`${row[col.name]}_${col.name}`}
-                                                >
-                                                    {text}
-                                                    {isItemSelected && colIndex === 0 && (
-                                                        <>
-                                                            {editItem && editItem.onSubmit && (
-                                                                <Tooltip title="Edit" onClick={handleEdit}>
-                                                                    <IconButton aria-label="edit">
-                                                                        <EditIcon/>
-                                                                    </IconButton>
-                                                                </Tooltip>
+                                        return (
+                                            <StyledTableRow
+                                                key={id}
+                                                selected={isItemSelected}
+                                                onClick={(event) => handleClick(event, row)}
+                                            >
+                                                {columns.map((col, colIndex) => {
+                                                    const text = col.format ? col.format(row[col.name]) : row[col.name];
+                                                    return (
+                                                        <StyledTableCell
+                                                            align={col.align}
+                                                            key={`${row[col.name]}_${col.name}`}
+                                                        >
+                                                            {text}
+                                                            {isItemSelected && colIndex === 0 && (
+                                                                <>
+                                                                    {editItem && editItem.onSubmit && (
+                                                                        <Tooltip title="Edit">
+                                                                            <IconButton aria-label="edit"
+                                                                                        onClick={handleEdit}>
+                                                                                <EditIcon/>
+                                                                            </IconButton>
+                                                                        </Tooltip>
+                                                                    )}
+                                                                    {onDelete && (
+                                                                        <Tooltip title="Delete">
+                                                                            <IconButton aria-label="delete"
+                                                                                        onClick={handleDelete}>
+                                                                                <DeleteIcon/>
+                                                                            </IconButton>
+                                                                        </Tooltip>
+                                                                    )}
+                                                                </>
                                                             )}
-                                                            {onDelete && (
-                                                                <Tooltip title="Delete">
-                                                                    <IconButton aria-label="delete"
-                                                                                onClick={handleDelete}>
-                                                                        <DeleteIcon/>
-                                                                    </IconButton>
-                                                                </Tooltip>
-                                                            )}
-                                                        </>
-                                                    )}
-                                                </StyledTableCell>
-                                            );
-                                        })}
-                                    </StyledTableRow>
-                                );
-                            })}
-                        </TableBody>
-                        {pagination && (
-                            <TableFooter>
-                                <TableRow>
-                                    <TablePagination
-                                        rowsPerPageOptions={pagination.rowsPerPageOptions}
-                                        count={pagination.totalElements}
-                                        rowsPerPage={pagination.rowsPerPage}
-                                        page={pagination.page}
-                                        SelectProps={{
-                                            inputProps: {'aria-label': 'rows per page'},
-                                            native: true,
-                                        }}
-                                        onPageChange={(_e, page) => pagination.onPageChange(page)}
-                                        onRowsPerPageChange={(e) => pagination.onRowsPerPageChange(parseInt(e.target.value, 10))}
-                                        ActionsComponent={TablePaginationActions}
-                                    />
-                                </TableRow>
-                            </TableFooter>
+                                                        </StyledTableCell>
+                                                    );
+                                                })}
+                                            </StyledTableRow>
+                                        );
+                                    })}
+                                </TableBody>
+                                {pagination && (
+                                    <TableFooter>
+                                        <TableRow>
+                                            <TablePagination
+                                                rowsPerPageOptions={pagination.rowsPerPageOptions}
+                                                count={pagination.totalElements}
+                                                rowsPerPage={pagination.rowsPerPage}
+                                                page={pagination.page}
+                                                SelectProps={{
+                                                    inputProps: {'aria-label': 'rows per page'},
+                                                    native: true,
+                                                }}
+                                                onPageChange={(_e, page) => pagination.onPageChange(page)}
+                                                onRowsPerPageChange={(e) => pagination.onRowsPerPageChange(parseInt(e.target.value, 10))}
+                                                ActionsComponent={TablePaginationActions}
+                                            />
+                                        </TableRow>
+                                    </TableFooter>
+                                )}
+                            </>
                         )}
                     </Table>
                 </TableContainer>
